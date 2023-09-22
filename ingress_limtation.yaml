@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: devtest-ingress-eks-limit
+  annotations:
+    #add group for ingress 
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/group.name: "alb-group"
+    alb.ingress.kubernetes.io/conditions.nginx: >
+     [{"field":"source-ip","sourceIpConfig":{"values":["54.174.125.134/32"]}}]
+
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /service
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx
+            port:
+              number: 80

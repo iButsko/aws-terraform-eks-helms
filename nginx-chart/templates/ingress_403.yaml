@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: devtest-ingress-eks-zrr
+  annotations:
+    #add group for ingress 
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/group.name: "alb-group"
+    alb.ingress.kubernetes.io/actions.response-403: >-
+      {
+        "type": "fixed-response",
+        "fixedResponseConfig": {
+          "contentType": "text/html",
+          "statusCode": "403",
+          "messageBody": "<!doctype html> <title>Anauthorize access</title> <style> body { text-align: center; padding: 150px; } h1 { font-size: 50px; } body { font: 20px Helvetica, sans-serif; color: #333; } article { display: block; text-align: left; width: 650px; margin: 0 auto; } a { color: #dc8100; text-decoration: none; } a:hover { color: #333; text-decoration: none; } </style> <article> <h1>unauthorized access attempt error 403 </h1> <div> <p>Sorry for the inconvenience but we&rsquo;re performing some intresting thing at the moment!</p> <p>&mdash; Security Team</p> </div> </article>"
+        }
+      }
+
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /service
+        pathType: ImplementationSpecific
+        backend:
+          serviceName: response-403
+          service:
+            name: response-403
+            port:
+              name: use-annotation

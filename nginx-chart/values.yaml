@@ -1,0 +1,10 @@
+appName: nginx
+Deployment: nginx-deployment
+image:
+  repository: 043751989667.dkr.ecr.us-east-1.amazonaws.com/devtest
+  tag: nginx-eks
+containerPort:
+  http: 80
+  https: 443
+namespace: default
+bastionip: 3.218.23.11/32
